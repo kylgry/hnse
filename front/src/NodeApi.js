@@ -30,6 +30,9 @@ class NodeApi {
   static async getAddress(address) {
     return (await this.request(`a/${address}`)) }
 
+  static async getBlock(height) {
+    return (await this.request(`b/${height}`)) }
+
 }
 
 export default NodeApi

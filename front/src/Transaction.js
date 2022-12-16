@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import NodeApi from './NodeApi'
+import TxInput from './TxInput'
+import TxOutput from './TxOutput'
+import Loading from './Loading'
+
 
 
 function Transaction() {
@@ -13,11 +17,16 @@ function Transaction() {
     getTxInfo()
   }, [txid])
 
-  if (!txInfo) return ''
+  if (!txInfo) return <Loading />
 
   return (
     <div className="container">
-      <p>transaction hash {txid} found in block {txInfo.block}</p>
+      <h2>tx {txid.slice(0,40)}...</h2>
+      <p>block <Link to={`/b/${txInfo.height}`}>{txInfo.height}</Link> at {(new Date(txInfo.time*1000)).toISOString()}</p>
+      <p>inputs</p>
+      {txInfo.inputs.map((i, n) => (<TxInput input={i} key={n} />))}
+      <p>outputs</p>
+      {txInfo.outputs.map((o, n) => (<TxOutput output={o} key={n} />))}
     </div>
   )
 }

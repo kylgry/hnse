@@ -1,48 +1,50 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import NodeApi from './NodeApi'
+import Loading from './Loading'
 
 
 function Name() {
 
   const { name } = useParams()
-  const [info, setInfo] = useState(null)
+  const [data, setData] = useState(null)
 
   useEffect(() => {
-    const getNameInfo = async () =>  { setInfo(await NodeApi.getName(name)) }
+    const getNameInfo = async () =>  { setData((await NodeApi.getName(name))) }
     getNameInfo()
   }, [name])
 
-  if (!info) return ''
+  if (data === null) return <Loading />
 
-  else if (!info.result.info && info.result.start.reserved === true) {
+  else if (!data.info && data.start.reserved === true) {
     return (
       <div className="container">
         <h2>{name}</h2>
-        <p>reserved but unclaimed</p>
+        <p>reserved but not registered</p>
       </div>
     )
   }
 
-  else if (!info.result.info && info.result.start.reserved === false) {
+  else if (!data.info && data.start.reserved === false) {
     return (
       <div className="container">
         <h2>{name}</h2>
-        <p>unclaimed</p>
+        <p>not registered</p>
       </div>
     )
   }
 
   else {
 
+    const i = data.info
+    const expiryDate = new Date(i.expiryDate).toISOString().slice(0,10)
+
     return (
     <div className="container">
-      <h2>{info.result.info.name}</h2>
-      <ul>
-        <li>claimed</li>
-        <li>block <Link to={`/b/${info.result.info.height}`}>{info.result.info.height}</Link></li>
-        <li>transaction <Link to={`/t/${info.result.info.owner.hash}`}>{info.result.info.owner.hash}</Link></li>
-      </ul>
+      <h2>{i.name}</h2>
+      <p>registered</p>
+      <p>last update in tx <Link to={`/t/${i.owner.hash}`}>{i.owner.hash}</Link></p>
+      <p>expires at block {i.stats.renewalPeriodEnd} on approximately {expiryDate}</p>
     </div>
     )
   }

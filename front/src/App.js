@@ -4,7 +4,8 @@ import Home from './Home'
 import Name from './Name'
 import Transaction from './Transaction'
 import Address from './Address'
-import NodeMap from './NodeMap'
+import Block from './Block'
+import './App.css'
 
 function App() {
   
@@ -17,7 +18,7 @@ function App() {
           <Route exact path="/n/:name" element={<Name />} />
           <Route exact path="/t/:txid" element={<Transaction />} />
           <Route exact path="/a/:address" element={<Address />} />
-          <Route exact path="/nodemap" element={<NodeMap />} />
+          <Route exact path="/b/:height" element={<Block />} />
         </Routes>
       </BrowserRouter>
     </div>
