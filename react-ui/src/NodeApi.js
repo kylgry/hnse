@@ -8,7 +8,6 @@ class NodeApi {
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { }
     const params = (method === "get") ? data : {}
-    console.log(url)
 
     try {
       return (await axios({ url, method, data, params, headers })).data
