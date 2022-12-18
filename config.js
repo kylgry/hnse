@@ -1,10 +1,8 @@
-"use strict";
+"use strict"
 
 require('dotenv').config()
 
-const PORT = +process.env.PORT || 3001;
-console.log("PORT:".yellow, PORT.toString());
-
+const PORT = +process.env.PORT || 5000;
 const HNS_NODE_ADDRESS = process.env.HNS_NODE_ADDRESS
 const HNS_NODE_AUTH = process.env.HNS_NODE_AUTH
 

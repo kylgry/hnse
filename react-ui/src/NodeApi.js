@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:3001"
+const BASE_URL = process.env.REACT_APP_BASE_URL || "http://localhost:5000/api"
 
 class NodeApi {
 
@@ -8,6 +8,7 @@ class NodeApi {
     const url = `${BASE_URL}/${endpoint}`;
     const headers = { }
     const params = (method === "get") ? data : {}
+    console.log(url)
 
     try {
       return (await axios({ url, method, data, params, headers })).data

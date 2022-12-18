@@ -1,4 +1,4 @@
-"use strict";
+"use strict"
 
 const express = require("express")
 const axios = require("axios")
@@ -22,7 +22,6 @@ function configRpc(method, params) {
 }
 
 function configHttp(endpoint) {
-  console.log(`${HNS_NODE_ADDRESS}/${endpoint}`)
   return {
     method: 'get',
     url: `${HNS_NODE_ADDRESS}/${endpoint}`,
