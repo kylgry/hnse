@@ -2,8 +2,6 @@
 
 const express = require("express")
 const cors = require("cors");
-
-
 const { NotFoundError } = require("./errors")
 const routes = require("./routes")
 const app = express()

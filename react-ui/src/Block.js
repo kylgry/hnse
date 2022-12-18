@@ -22,7 +22,7 @@ function Block() {
       <h2>block {height}</h2>
       <p>{(new Date(blockInfo.time*1000)).toISOString()}</p>
       <p>{Math.floor(blockInfo.size/1024)} kb, {blockInfo.tx.length} transactions</p>
-      <p>{blockInfo.tx.map(n => (<span key={n.hash}><Link to={`/t/${n.txid}`} key={n.hash}>{n.hash}</Link><br /></span>))}</p>
+      {blockInfo.tx.map(n => (<div className="indent1" key={n.hash}><Link to={`/t/${n.txid}`} key={n.hash}>{n.hash}</Link><br /></div>))}
     </div>
   )
 }

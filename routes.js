@@ -4,14 +4,15 @@ const express = require("express")
 const axios = require("axios")
 const { BadRequestError } = require("./errors")
 const router = express.Router()
-const { NODEADDRESS, NODEAUTH } = require("./secrets");
+const { HNS_NODE_ADDRESS, HNS_NODE_AUTH } = require("./config")
+
 
 function configRpc(method, params) {
   return {
     method: 'post',
-    url: NODEADDRESS,
+    url: HNS_NODE_ADDRESS,
     headers: { 
-      'Authorization': NODEAUTH, 
+      'Authorization': HNS_NODE_AUTH, 
       'Content-Type': 'application/json' },
     data : JSON.stringify({
       "jsonrpc": "2.0",
@@ -21,11 +22,12 @@ function configRpc(method, params) {
 }
 
 function configHttp(endpoint) {
+  console.log(`${HNS_NODE_ADDRESS}/${endpoint}`)
   return {
     method: 'get',
-    url: `${NODEADDRESS}/${endpoint}`,
+    url: `${HNS_NODE_ADDRESS}/${endpoint}`,
     headers: { 
-      'Authorization': NODEAUTH, 
+      'Authorization': HNS_NODE_AUTH, 
       'Content-Type': 'application/json' },
   }
 }
@@ -40,68 +42,45 @@ router.get("/n/:name", async function (req, res, next) {
       data.info.expiryDate = new Date((new Date()).getTime()+data.info.stats.daysUntilExpire*24*3600000)
     }
     return res.json(data)
-  } catch (err) {
-    return next(err)
-  }
+  } catch (err) { return next(err) }
 
 })
 
 router.get("/nh/:hash", async function (req, res, next) {
 
-  try {
-    const info = await axios(configRpc('getnamebyhash', [req.params.hash]))
-    return res.json(info.data)
-  } catch (err) {
-    return next(err)
-  }
+  try { return res.json((await axios(configRpc('getnamebyhash', [req.params.hash]))).data) } 
+  catch (err) { return next(err) }
 
 })
 
 router.get("/b/:height", async function (req, res, next) {
 
-  try {
-    return res.json((await axios(configRpc('getblockbyheight', [parseInt(req.params.height), true, true]))).data.result)
-  } catch (err) {
-    return next(err)
-  }
+  try { return res.json((await axios(configRpc('getblockbyheight', 
+        [parseInt(req.params.height), true, true]))).data.result) } 
+  catch (err) { return next(err) } 
 
 })
 
 router.get("/t/:txid", async function (req, res, next) {
 
-  const config = {
-    method: 'get',
-    url: `${NODEADDRESS}/tx/${req.params.txid}`,
-    headers: { 
-      'Authorization': NODEAUTH, 
-      'Content-Type': 'application/json' },
-  }
-
-  try {
-    const info = await axios(config)
-    return res.json(info.data)
-  } catch (err) {
-    return next(err)
-  }
+  try { return res.json((await axios(configHttp(`tx/${req.params.txid}`))).data) } 
+  catch (err) { return next(err) } 
 
 })
 
 router.get("/a/:address", async function (req, res, next) {
 
-  const config = {
-    method: 'get',
-    url: `${NODEADDRESS}/coin/address/${req.params.address}`,
-    headers: { 
-      'Authorization': NODEAUTH, 
-      'Content-Type': 'application/json' },
-  }
-
   try {
-    const info = await axios(config)
-    return res.json(info.data)
-  } catch (err) {
-    return next(err)
-  }
+    const coins = (await axios(configHttp(`coin/address/${req.params.address}`))).data
+    const txs = (await axios(configHttp(`tx/address/${req.params.address}`))).data
+    let totalCoins = 0
+    if (coins.length !== 0) {
+      for (let coin of coins) {
+        totalCoins += coin.value
+      }
+    }
+    return res.json({coins: coins, txs: txs, totalCoins: totalCoins}) }
+  catch (err) { return next(err) }
 
 })
 
