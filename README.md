@@ -1,10 +1,10 @@
 ## handshake name system explorer
 
-[https://hnse.herokuapp.com](hnse.herokuapp.com)
+[hnse.herokuapp.com](https://hnse.herokuapp.com)
 
 this is a basic explorer for the handshake name system. 
 
-details about about handshake can be found at [https://handshake.org](handshake.org).
+details about about handshake can be found at [handshake.org](https://handshake.org).
 
 the app directly queries the [api from a handshake node](https://hsd-dev.org/api-docs/). 
 
